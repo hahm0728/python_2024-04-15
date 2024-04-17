@@ -11,7 +11,6 @@
 #         경기도 성남시 분당구 백현동
 #       </div>
 
-
 from bs4 import BeautifulSoup
 import requests
 
