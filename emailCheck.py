@@ -1,28 +1,35 @@
-import re
+import psutil
 
-def is_valid_email(email):
+def get_memory_info():
   """
-  이메일 주소가 유효한지 검사하는 함수입니다.
-
-  Args:
-    email: 검사할 이메일 주소 문자열입니다.
+  컴퓨터의 메모리 정보를 가져와 사전에 담아 반환하는 함수입니다.
 
   Returns:
-    이메일 주소가 유효하면 True, 그렇지 않으면 False를 반환합니다.
+    사전 형태로 된 메모리 정보를 반환합니다. 키는 다음과 같습니다.
+      * total: 총 메모리 용량 (바이트)
+      * available: 사용 가능한 메모리 용량 (바이트)
+      * used: 사용 중인 메모리 용량 (바이트)
+      * percent_used: 사용 중인 메모리 비율 (%)
   """
-  regex = r"""^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z]{2,}$"""
-  return bool(re.search(regex, email))
+  memory_info = psutil.virtual_memory()
+  return {
+      "total": memory_info.total,
+      "available": memory_info.available,
+      "used": memory_info.used,
+      "percent_used": memory_info.percent_used,
+  }
 
-def main():
+def print_memory_info():
   """
-  사용자에게 이메일 주소를 입력받아 유효성을 검사하고 결과를 출력하는 함수입니다.
+  메모리 정보를 가져와 출력하는 함수입니다.
   """
-  email = input("이메일 주소를 입력하세요: ")
+  memory_info = get_memory_info()
 
-  if is_valid_email(email):
-    print(f"{email}은 유효한 이메일 주소입니다.")
-  else:
-    print(f"{email}은 유효하지 않은 이메일 주소입니다.")
+  print("메모리 정보:")
+  print(f"총 메모리: {memory_info['total']:,} 바이트")
+  print(f"사용 가능한 메모리: {memory_info['available']:,} 바이트")
+  print(f"사용 중인 메모리: {memory_info['used']:,} 바이트")
+  print(f"사용 중인 메모리 비율: {memory_info['percent_used']:.1f}%")
 
 if __name__ == "__main__":
-  main()
+  print_memory_info()
