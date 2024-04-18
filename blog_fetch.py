@@ -2,9 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 
-search_keyword='맥북에어'
+search_keyword='아이폰14'
 
-url = f'https://search.naver.com/search.naver?where=view&sm=tab_jum&query={search_keyword}'
+url = f'https://search.naver.com/search.naver?where=view&sm=tab_jum&query=아이폰14&start=2'
+
+# url = f'https://search.naver.com/search.naver?where=view&sm=tab_jum&query={search_keyword}'
 
 response = requests.get(url)
 
@@ -12,7 +14,7 @@ response = requests.get(url)
 
 soup = BeautifulSoup(response.text, 'html.parser')
 
-# create a new Excel workbook and select the active sheet\
+# create a new Excel workbook and select the active sheet
 wb = Workbook()
 ws = wb.active
 
@@ -22,32 +24,31 @@ ws.append(["블로그명", "블로그주소", "글 제목", "포스팅 날짜"])
 for page in range(1, 101):
     url = f'https://search.naver.com/search.naver?where=view&sm=tab_jum&query={search_keyword}&start={page * 10 - 9}'
 
-    posts = soup.find_all('li', {'class':'bx'})
+    posts = soup.find_all('li', {'class':'bx _svp_item'})
     for post in posts:
+        #<span class="elss etc_dsc_inner">
+        #<a href="https://blog.naver.com/hongganz" class="sub_txt sub_name">이웃삼촌이 들려주는 IT 이야기</a>
+        blog_name_elem = post.find('span', {'class':'elss etc_dsc_inner'})
+        blog_name = blog_name_elem.text 
         try:
-            blog_address_elem = post.find("a", 
-                attrs={"class":"name"}) 
+            blog_address_elem = blog_name_elem.find("a", 
+                attrs={"class":"sub_txt sub_name"}) 
             blog_address = blog_address_elem["href"]
-            blog_address_title_elem = post.find("a", 
-                            attrs={"class":"name"}) 
-            blog_address_title = blog_address_title_elem.text 
         except TypeError:
             blog_address = "" 
-            blog_address_title = ""
-        
 
-        post_date_elem = post.find('span', {'class':'sub'})
+        post_date_elem = post.find('span', {'class':'sub_time sub_txt'})
         post_date = post_date_elem.text if post_date_elem else ""
         post_title_elem = post.find('a',
-            {'class':'title_link'})
+            {'class':'api_txt_lines total_tit _cross_trigger'})
         post_title = post_title_elem.text if post_title_elem else "" 
 
+        print(blog_name)
         print(blog_address)
-        print(blog_address_title)
         print(post_title)
         print(post_date)
 
-        ws.append([blog_address, blog_address_title, post_title, post_date])
+        ws.append([blog_name, blog_address, post_title, post_date])
 
 path = 'c:\\work\\'
 file_path = f'{path}{search_keyword}_blog_data.xlsx'
