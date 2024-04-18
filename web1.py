@@ -2,7 +2,7 @@
 from bs4 import BeautifulSoup
 
 # file loading
-page = open("c:\\work\\Chap09_test.html","rt", encoding="UTF-8").read()
+page = open("https://learningspoons.com/course/detail/pythonforfinance/","rt", encoding="UTF-8").read()
 
 # parsing
 soup = BeautifulSoup(page, "html.parser")

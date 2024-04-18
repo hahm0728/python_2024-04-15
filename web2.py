@@ -14,29 +14,59 @@
 from bs4 import BeautifulSoup
 import requests
 
-url = "https://www.daangn.com/fleamarket/"
+url = "https://learningspoons.com/course/detail/pythonforfinance/"
 
 response = requests.get(url)
 
 soup = BeautifulSoup(response.text, "html.parser")
 
-f = open("daangn.txt","wt", encoding="utf-8")
 
-posts = soup.find_all("div", attrs={"class":"card-desc"})
+posts = soup.find_all("div", attrs={"class":"accordion-title"})
+# posts = soup.find_all("div", attrs={"class":"flex flex-justify-between"})
+
+# print(posts)
+
 for post in posts:
-    titleElem = post.find("h2",attrs={"class":"card-title"})
-    title = titleElem.text.strip()
-    priceElem = post.find("div",attrs={"class":"card-price"})
-    price = priceElem.text.strip()
-    addrElem = post.find("div",attrs={"class":"card-region-name"})
-    addr = addrElem.text.strip()
+    try:
+        title = post.find("p").text.strip()
+        print(title)
+    except:
+        pass 
 
-    print(f"{title},{price},{addr}")
-    f.write(f"{title},{price},{addr}\n")
+    subPost = post.find_all("li", attrs={"class":"flex flex-justify-between"})
+    for item in subPost:
+        title2 = item.find("strong").text.strip()
+        print("---", title2 )
+        # <div class="flex flex-justify-between">
+        #                                 <div class="">
+                                            
+        #                                     <p><strong>1-0. Intro 과정소개</strong></p>
+                                            
+        #                                 </div>
+        #                                 <div class="details">
+                                            
+        #                                     <span>00:04:05</span>
+                                            
+        #                                 </div>
+        #                             </div>
+        # # <li class="accordion-item active">
+        #                         <div class="accordion-title">
+        #                             <p>SECTION 7. 파이썬을 활용한 금융 데이터 수집 및 분석</p>
+                                    
+        #                                 <div class="details">
+        #                                     <span>12:15:22</span>
+        #                                 </div>
+                                    
+        #                         </div>
+                            
+                                
 
-f.close()
+    #
+    # priceElem = post.find("div",attrs={"class":"accordion-title"})
+    # price = priceElem.text.strip()
 
-
+    # print(f"{price}")
+    # print(f"{title},{price},{addr}")
 
 
 # file loading

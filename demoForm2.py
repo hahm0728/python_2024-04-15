@@ -23,9 +23,10 @@ class Demoform(QMainWindow, form_class):
         url = "https://www.daangn.com/fleamarket/"
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
-        f = open("daangn.txt","wt", encoding="utf-8")
+        # f = open("daangn.txt","wt", encoding="utf-8")
 
         posts = soup.find_all("div", attrs={"class":"card-desc"})
+        temp=""
         for post in posts:
             titleElem = post.find("h2",attrs={"class":"card-title"})
             title = titleElem.text.strip()
@@ -34,11 +35,14 @@ class Demoform(QMainWindow, form_class):
             addrElem = post.find("div",attrs={"class":"card-region-name"})
             addr = addrElem.text.strip()
 
-            # print(f"{title},{price},{addr}")
-            #time.sleep(3)
-            f.write(f"{title},{price},{addr}\n")
-        f.close()
-        self.label.setText(f"{title},{price},{addr}\n")
+            
+            temp = f"{title},{price},{addr}"
+            print(temp)
+            self.label.setText(temp)
+            time.sleep(3)
+            # f.write(f"{title},{price},{addr}\n")
+        # f.close()
+
 
     def secondClick(self):
         self.label.setText("두 번째 버튼을 클릭")
